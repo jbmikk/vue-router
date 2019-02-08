@@ -69,8 +69,10 @@ export default {
       matched.instances[name] = vnode.componentInstance
     }
 
+    const view = { attrs: data.attrs }
+
     // resolve props
-    let propsToPass = data.props = resolveProps(route, matched.props && matched.props[name])
+    let propsToPass = data.props = resolveProps(route, matched.props && matched.props[name], view)
     if (propsToPass) {
       // clone to prevent mutation
       propsToPass = data.props = extend({}, propsToPass)
@@ -88,14 +90,14 @@ export default {
   }
 }
 
-function resolveProps (route, config) {
+function resolveProps (route, config, view) {
   switch (typeof config) {
     case 'undefined':
       return
     case 'object':
       return config
     case 'function':
-      return config(route)
+      return config(route, view)
     case 'boolean':
       return config ? route.params : undefined
     default:
